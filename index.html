@@ -20,6 +20,7 @@
       document.addEventListener("keydown", keyDownHandler, false);
       document.addEventListener("keyup", keyUpHandler, false);
       document.body.style.zoom = "288%";
+
       let fps = 60;
       let worldTiles = new Image();
       worldTiles.src = "tiles-overworld.png";
@@ -112,75 +113,132 @@
       function drawLink() {
         let speed = 2;
         animationCounter++;
-
-        if (leftPressed && !collision(linkX - speed, linkY, gameMap)) {
-          linkX -= speed;
-          if (currentAnimation == 0) {
-            ctx.drawImage(link1, 30, 0, 16, 16, linkX, linkY, 16, 16);
-          } else if (currentAnimation == 1) {
-            ctx.drawImage(link1, 30, 30, 16, 16, linkX, linkY, 16, 16);
+        if (playPickUpItemAnimation) {
+          console.log("play pickupanimation");
+          animationCounter++;
+          if (animationCounter < 300) {
+            ctx.drawImage(link1, 1, 150, 16, 16, linkX, linkY, 16, 16);
+          } else {
+            playPickUpItemAnimation = false;
           }
-          if (animationCounter >= 6) {
-            currentAnimation++;
-            animationCounter = 0;
-            if (currentAnimation > 1) {
-              currentAnimation = 0;
-            }
-          }
-        } else if (rightPressed & !collision(linkX + speed, linkY, gameMap)) {
-          linkX += speed;
-          if (currentAnimation == 0) {
-            ctx.drawImage(link1, 91, 0, 16, 16, linkX, linkY, 16, 16);
-          } else if (currentAnimation == 1) {
-            ctx.drawImage(link1, 91, 30, 16, 16, linkX, linkY, 16, 16);
-          }
-          if (animationCounter >= 6) {
-            currentAnimation++;
-            animationCounter = 0;
-            if (currentAnimation > 1) {
-              currentAnimation = 0;
-            }
-          }
-        } else if (upPressed & !collision(linkX, linkY - speed, gameMap)) {
-          linkY -= speed;
-          if (currentAnimation == 0) {
-            ctx.drawImage(link1, 62, 0, 16, 16, linkX, linkY, 16, 16);
-          } else if (currentAnimation == 1) {
-            ctx.drawImage(link1, 62, 30, 16, 16, linkX, linkY, 16, 16);
-          }
-          if (animationCounter >= 6) {
-            currentAnimation++;
-            animationCounter = 0;
-            if (currentAnimation > 1) {
-              currentAnimation = 0;
-            }
-          }
-        } else if (downPressed & !collision(linkX, linkY + speed, gameMap)) {
-          linkY += speed;
-          if (currentAnimation == 0) {
-            ctx.drawImage(link1, 0, 0, 16, 16, linkX, linkY, 16, 16);
-          } else if (currentAnimation == 1) {
-            ctx.drawImage(link1, 0, 30, 16, 16, linkX, linkY, 16, 16);
-          }
-          if (animationCounter >= 6) {
-            currentAnimation++;
-            animationCounter = 0;
-            if (currentAnimation > 1) {
-              currentAnimation = 0;
-            }
+          //0 - boomerang
+          //1 - bomb
+          //2 - bow and arrow
+          //3 - candle
+          //4 - flute
+          //5 - meat
+          //6 - potion(red or blue)
+          //7 - magic rod
+          //8 - raft
+          //9 - book of magic
+          //10 - ring
+          //11 - ladder
+          //12 - key
+          //13 - bracelet
+          //14 - wood sword
+          switch (lastPickUpItem) {
+            case 0:
+              break;
+            case 1:
+              break;
+            case 2:
+              break;
+            case 3:
+              break;
+            case 4:
+              break;
+            case 5:
+              break;
+            case 6:
+              break;
+            case 7:
+              break;
+            case 8:
+              break;
+            case 9:
+              break;
+            case 10:
+              break;
+            case 11:
+              break;
+            case 12:
+              break;
+            case 13:
+              break;
+            case 14:
+              ctx.drawImage(hud, 555, 137, 8, 16, linkX - 2, linkY - 14, 8, 16);
+              break;
           }
         } else {
-          if (lastButtonPressed == "down") {
-            ctx.drawImage(link1, 0, 0, 16, 16, linkX, linkY, 16, 16);
-          }
-          if (lastButtonPressed == "up") {
-            ctx.drawImage(link1, 62, 0, 16, 16, linkX, linkY, 16, 16);
-          }
-          if (lastButtonPressed == "left") {
-            ctx.drawImage(link1, 30, 0, 16, 16, linkX, linkY, 16, 16);
-          }
-          if (lastButtonPressed == "right") {
-            ctx.drawImage(link1, 91, 0, 16, 16, linkX, linkY, 16, 16);
+          if (leftPressed && !collision(linkX - speed, linkY, gameMap)) {
+            linkX -= speed;
+            if (currentAnimation == 0) {
+              ctx.drawImage(link1, 30, 0, 16, 16, linkX, linkY, 16, 16);
+            } else if (currentAnimation == 1) {
+              ctx.drawImage(link1, 30, 30, 16, 16, linkX, linkY, 16, 16);
+            }
+            if (animationCounter >= 6) {
+              currentAnimation++;
+              animationCounter = 0;
+              if (currentAnimation > 1) {
+                currentAnimation = 0;
+              }
+            }
+          } else if (rightPressed & !collision(linkX + speed, linkY, gameMap)) {
+            linkX += speed;
+            if (currentAnimation == 0) {
+              ctx.drawImage(link1, 91, 0, 16, 16, linkX, linkY, 16, 16);
+            } else if (currentAnimation == 1) {
+              ctx.drawImage(link1, 91, 30, 16, 16, linkX, linkY, 16, 16);
+            }
+            if (animationCounter >= 6) {
+              currentAnimation++;
+              animationCounter = 0;
+              if (currentAnimation > 1) {
+                currentAnimation = 0;
+              }
+            }
+          } else if (upPressed & !collision(linkX, linkY - speed, gameMap)) {
+            linkY -= speed;
+            if (currentAnimation == 0) {
+              ctx.drawImage(link1, 62, 0, 16, 16, linkX, linkY, 16, 16);
+            } else if (currentAnimation == 1) {
+              ctx.drawImage(link1, 62, 30, 16, 16, linkX, linkY, 16, 16);
+            }
+            if (animationCounter >= 6) {
+              currentAnimation++;
+              animationCounter = 0;
+              if (currentAnimation > 1) {
+                currentAnimation = 0;
+              }
+            }
+          } else if (downPressed & !collision(linkX, linkY + speed, gameMap)) {
+            linkY += speed;
+            if (currentAnimation == 0) {
+              ctx.drawImage(link1, 0, 0, 16, 16, linkX, linkY, 16, 16);
+            } else if (currentAnimation == 1) {
+              ctx.drawImage(link1, 0, 30, 16, 16, linkX, linkY, 16, 16);
+            }
+            if (animationCounter >= 6) {
+              currentAnimation++;
+              animationCounter = 0;
+              if (currentAnimation > 1) {
+                currentAnimation = 0;
+              }
+            }
+          } else {
+            if (lastButtonPressed == "down") {
+              ctx.drawImage(link1, 0, 0, 16, 16, linkX, linkY, 16, 16);
+            }
+            if (lastButtonPressed == "up") {
+              ctx.drawImage(link1, 62, 0, 16, 16, linkX, linkY, 16, 16);
+            }
+            if (lastButtonPressed == "left") {
+              ctx.drawImage(link1, 30, 0, 16, 16, linkX, linkY, 16, 16);
+            }
+            if (lastButtonPressed == "right") {
+              ctx.drawImage(link1, 91, 0, 16, 16, linkX, linkY, 16, 16);
+            }
           }
         }
       }
@@ -362,6 +420,121 @@
                 gameObjects = maps[objects[i].newMap].gameobjects;
                 linkX = objects[i].newLinkX;
                 linkY = objects[i].newLinkY;
+              }
+
+              if (objects[i].isPickUpItem) {
+                playPickUpItemAnimation = true;
+                ///There are a number of pick up items. The first 8 are selctable within
+                /// the inventory screen. The following 6 sit on top of the selectable inventory
+                /// and are automatically equipped and used by link.
+                //0 - boomerang
+                //1 - bomb
+                //2 - bow and arrow
+                //3 - candle
+                //4 - flute
+                //5 - meat
+                //6 - potion(red or blue)
+                //7 - magic rod
+                //8 - raft
+                //9 - book of magic
+                //10 - ring
+                //11 - ladder
+                //12 - key
+                //13 - bracelet
+                //14 - wood sword
+                switch (gameObjects[i].pickUpItemNum) {
+                  case 0:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 1:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 2:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 3:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 4:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 5:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 6:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 7:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 8:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 9:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 10:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 11:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 12:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 13:
+                    gO = new GameObject();
+                    gO.pickUpItemNum = gameObjects[i].pickUpItemNum;
+                    inventoryItems[gameObjects[i].pickUpItemNum] = gO;
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    break;
+                  case 14:
+                    lastPickUpItem = gameObjects[i].pickUpItemNum;
+                    swordEquipped = 1;
+                    animationCounter = 0;
+                }
+
+                objects.splice(i, 1);
+                animationCounter = 0;
               }
             }
           }
