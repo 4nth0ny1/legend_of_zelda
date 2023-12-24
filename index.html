@@ -32,6 +32,7 @@
       link1.src = "link.png";
       let hud = new Image();
       hud.src = "pausescreen.png";
+      ///added
       let enemies = new Image();
       enemies.src = "enemies.png";
       let rightPressed = false;
@@ -56,6 +57,10 @@
       let keyAmount = 1;
       let bombAmount = 3;
       let swordEquipped = 0;
+
+      let hasSword = false;
+      let isAttacking = false;
+      let canAttackAgain = true;
 
       function GameObject() {
         this.x = 0;
@@ -86,14 +91,14 @@
         this.isRupee = false;
         this.rupeeValue = 1;
 
-        this.isEnemy = false;
+        // addedthis.isEnemy = false;
         this.enemyType = 0;
         this.nextX = 0;
         this.nextY = 0;
         this.isAttacking = false;
         this.health = 0;
-        this.direction = "left";
-        this.enemy = [];
+        this.direction = "up";
+        this.enemyPath = [];
         this.counter = 0;
         this.frame = 0;
         this.needsBounce = false;
@@ -125,6 +130,12 @@
         } else if (e.keyCode == 40) {
           downPressed = true;
           lastButtonPressed = "down";
+        }
+        if (e.keyCode == 32 && canAttackAgain) {
+          isAttacking = true;
+          currentAnimation = 0;
+          canAttackAgain = false;
+          playSound("./sounds/LOZ_sword_slash.wav");
         }
       }
 
@@ -199,7 +210,55 @@
               break;
           }
         } else {
-          if (leftPressed && !collision(linkX - speed, linkY, gameMap)) {
+          if (isAttacking && hasSword) {
+            if (currentAnimation == 0) {
+              if (lastButtonPressed == "down") {
+                ctx.drawImage(link1, 0, 60, 16, 16, linkX, linkY, 16, 16);
+              }
+              if (lastButtonPressed == "up") {
+                ctx.drawImage(link1, 62, 60, 16, 16, linkX, linkY, 16, 16);
+              }
+              if (lastButtonPressed == "left") {
+                ctx.drawImage(link1, 30, 60, 16, 16, linkX, linkY, 16, 16);
+              }
+              if (lastButtonPressed == "right") {
+                ctx.drawImage(link1, 91, 60, 16, 16, linkX, linkY, 16, 16);
+              }
+            }
+            if (currentAnimation == 1) {
+              if (lastButtonPressed == "down") {
+                ctx.drawImage(link1, 0, 84, 16, 27, linkX, linkY, 16, 27);
+              }
+              if (lastButtonPressed == "up") {
+                ctx.drawImage(link1, 62, 84, 16, 26, linkX, linkY - 14, 16, 26);
+              }
+              if (lastButtonPressed == "left") {
+                ctx.drawImage(
+                  link1,
+                  22,
+                  84,
+                  26,
+                  27,
+                  linkX - 10,
+                  linkY - 8,
+                  27,
+                  27
+                );
+              }
+              if (lastButtonPressed == "right") {
+                ctx.drawImage(link1, 84, 84, 30, 26, linkX, linkY - 8, 30, 26);
+              }
+            }
+            if (animationCounter >= 6) {
+              currentAnimation++;
+              animationCounter = 0;
+              if (currentAnimation > 1) {
+                currentAnimation = 0;
+                isAttacking = false;
+                canAttackAgain = true;
+              }
+            }
+          } else if (leftPressed && !collision(linkX - speed, linkY, gameMap)) {
             linkX -= speed;
             if (currentAnimation == 0) {
               ctx.drawImage(link1, 30, 0, 16, 16, linkX, linkY, 16, 16);
@@ -302,13 +361,19 @@
       let objects7_7 = [];
       objects7_7.push(gO);
 
+      ///added for lesson 10
       gO = new GameObject();
       gO.x = 160;
       gO.y = 184;
+      gO.nextX = 160;
+      gO.nextY = 184;
       gO.width = 16;
       gO.height = 16;
       gO.isEnemy = true;
       gO.enemyType = 1;
+      gO.isAttacking = false;
+      gO.health = 1;
+      gO.direction = "up";
       objects7_7.push(gO);
 
       let bundle = new MapBundle(map7_7, objects7_7);
@@ -569,6 +634,7 @@
                     lastPickUpItem = gameObjects[i].pickUpItemNum;
                     swordEquipped = 1;
                     animationCounter = 0;
+                    hasSword = true;
                     playSound("./sounds/item.mp3");
                 }
 
@@ -746,10 +812,10 @@
               16
             );
           }
-
           if (gameObjects[i].isEnemy) {
             if (gameObjects[i].enemyType == 1) {
               gameObjects[i].counter++;
+
               if (gameObjects[i].counter >= 10) {
                 gameObjects[i].frame++;
                 gameObjects[i].counter = 0;
