@@ -32,6 +32,8 @@
       link1.src = "link.png";
       let hud = new Image();
       hud.src = "pausescreen.png";
+      let enemies = new Image();
+      enemies.src = "enemies.png";
       let rightPressed = false;
       let leftPressed = false;
       let upPressed = false;
@@ -49,10 +51,10 @@
       let playPickUpItemAnimation = false;
 
       let rupeeAmount = 0;
-      let linkHearts = 3;
-      let currentLinkHearts = 3;
+      let linkHearts = 14;
+      let currentLinkHearts = 14;
       let keyAmount = 1;
-      let bombAmount = 5;
+      let bombAmount = 3;
       let swordEquipped = 0;
 
       function GameObject() {
@@ -81,6 +83,22 @@
         this.isFlame = false;
         this.isOldWoman = false;
         this.pickUpItemName = "";
+        this.isRupee = false;
+        this.rupeeValue = 1;
+
+        this.isEnemy = false;
+        this.enemyType = 0;
+        this.nextX = 0;
+        this.nextY = 0;
+        this.isAttacking = false;
+        this.health = 0;
+        this.direction = "left";
+        this.enemy = [];
+        this.counter = 0;
+        this.frame = 0;
+        this.needsBounce = false;
+        this.bounceX = 0;
+        this.bounceY = 0;
       }
 
       function MapBundle(m, o) {
@@ -282,6 +300,15 @@
       gO.newLinkY = 220;
       gO.isPortal = true;
       let objects7_7 = [];
+      objects7_7.push(gO);
+
+      gO = new GameObject();
+      gO.x = 160;
+      gO.y = 184;
+      gO.width = 16;
+      gO.height = 16;
+      gO.isEnemy = true;
+      gO.enemyType = 1;
       objects7_7.push(gO);
 
       let bundle = new MapBundle(map7_7, objects7_7);
@@ -719,24 +746,148 @@
               16
             );
           }
+
+          if (gameObjects[i].isEnemy) {
+            if (gameObjects[i].enemyType == 1) {
+              gameObjects[i].counter++;
+              if (gameObjects[i].counter >= 10) {
+                gameObjects[i].frame++;
+                gameObjects[i].counter = 0;
+                if (gameObjects[i].frame > 1) {
+                  gameObjects[i].frame = 0;
+                }
+              }
+              if (gameObjects[i].direction == "down") {
+                if (gameObjects[i].frame == 0) {
+                  ctx.drawImage(
+                    enemies,
+                    0,
+                    0,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+                if (gameObjects[i].frame == 1) {
+                  ctx.drawImage(
+                    enemies,
+                    0,
+                    30,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+              } else if (gameObjects[i].direction == "up") {
+                if (gameObjects[i].frame == 0) {
+                  ctx.drawImage(
+                    enemies,
+                    60,
+                    0,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+                if (gameObjects[i].frame == 1) {
+                  ctx.drawImage(
+                    enemies,
+                    60,
+                    30,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+              } else if (gameObjects[i].direction == "left") {
+                if (gameObjects[i].frame == 0) {
+                  ctx.drawImage(
+                    enemies,
+                    30,
+                    0,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+                if (gameObjects[i].frame == 1) {
+                  ctx.drawImage(
+                    enemies,
+                    30,
+                    30,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+              } else {
+                if (gameObjects[i].frame == 0) {
+                  ctx.drawImage(
+                    enemies,
+                    90,
+                    0,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+                if (gameObjects[i].frame == 1) {
+                  ctx.drawImage(
+                    enemies,
+                    90,
+                    30,
+                    16,
+                    16,
+                    gameObjects[i].x,
+                    gameObjects[i].y,
+                    16,
+                    16
+                  );
+                }
+              }
+            }
+          }
         }
       }
 
       function drawHUD() {
         ctx.drawImage(hud, 258, 11, 256, 56, 0, 0, 256, 56);
-
+        //ctx.drawImage(hud, 2, 112, 16, 64,
+        //			176, 32, 64,  16);
         ctx.fillStyle = "black";
         ctx.fillRect(176, 32, 64, 16);
-
+        //draw Hearts
         let fullHearts = Math.floor(currentLinkHearts);
         let halfHearts = currentLinkHearts - fullHearts;
-
         for (let i = 0; i < linkHearts; i++) {
           let heartY = 40;
           let heartX = 176 + i * 8;
           if (i > 7) {
             heartY = 40 - 8;
             heartX -= 64;
+          } else {
+            heartY = 40;
           }
           ctx.drawImage(hud, 627, 117, 8, 8, heartX, heartY, 8, 8);
         }
@@ -748,6 +899,8 @@
           if (i > 7) {
             heartY = 40 - 8;
             heartX -= 64;
+          } else {
+            heartY = 40;
           }
           ctx.drawImage(hud, 645, 117, 8, 8, heartX, heartY, 8, 8);
           if (i == fullHearts - 1) {
@@ -760,21 +913,26 @@
             }
           }
         }
+
         if (halfHearts > 0 && fullHearts >= 1) {
           ctx.drawImage(hud, 636, 117, 8, 8, halfHeartX, halfHeartY, 8, 8);
         } else if (halfHearts > 0 && fullHearts == 0) {
           ctx.drawImage(hud, 636, 117, 8, 8, 176, 40, 8, 8);
         }
 
+        ////This draws the rupee values
+        ///cover with black
+        //ctx.drawImage(hud, 354, 36, 24, 6,
+        //			96, 10, 24, 50);
         ctx.fillStyle = "black";
         ctx.fillRect(96, 10, 24, 50);
-
+        ///124
         if (rupeeAmount < 100) {
           ctx.drawImage(hud, 519, 117, 8, 8, 96, 16, 8, 8);
           let firstNum = rupeeAmount % 10;
           ctx.drawImage(
             hud,
-            528 + 8 * firstNum + firstNum,
+            528 + 8 * firstNum + 1 * firstNum,
             117,
             8,
             8,
@@ -786,7 +944,7 @@
           let secondNum = Math.floor(rupeeAmount / 10);
           ctx.drawImage(
             hud,
-            528 + 8 * secondNum + secondNum,
+            528 + 8 * secondNum + 1 * secondNum,
             117,
             8,
             8,
@@ -799,7 +957,7 @@
           let firstNum = rupeeAmount % 10;
           ctx.drawImage(
             hud,
-            528 + 8 * firstNum + firstNum,
+            528 + 8 * firstNum + 1 * firstNum,
             117,
             8,
             8,
@@ -808,11 +966,12 @@
             8,
             8
           );
+          let secondNum = Math.floor(rupeeAmount / 10);
           let thirdNum = Math.floor(rupeeAmount / 100) * 100;
-          let secondNum = (rupeeAmount - thirdNum - firstNum) / 10;
+          secondNum = (rupeeAmount - thirdNum - firstNum) / 10;
           ctx.drawImage(
             hud,
-            528 + 8 * secondNum + secondNum,
+            528 + 8 * secondNum + 1 * secondNum,
             117,
             8,
             8,
@@ -824,7 +983,7 @@
           thirdNum = Math.floor(rupeeAmount / 100);
           ctx.drawImage(
             hud,
-            528 + 8 * thirdNum + thirdNum,
+            528 + 8 * thirdNum + 1 * thirdNum,
             117,
             8,
             8,
@@ -835,11 +994,12 @@
           );
         }
 
+        //draw bomb and key nums
+        ///key num
         ctx.drawImage(hud, 519, 117, 8, 8, 96, 32, 8, 8);
-        ctx.drawImage(hud, 519, 117, 8, 8, 96, 41, 8, 8);
         ctx.drawImage(
           hud,
-          528 + 8 * keyAmount + keyAmount,
+          528 + 8 * keyAmount + 1 * keyAmount,
           117,
           8,
           8,
@@ -848,9 +1008,11 @@
           8,
           8
         );
+        ///bomb num
+        ctx.drawImage(hud, 519, 117, 8, 8, 96, 41, 8, 8);
         ctx.drawImage(
           hud,
-          528 + 8 * bombAmount + bombAmount,
+          528 + 8 * bombAmount + 1 * bombAmount,
           117,
           8,
           8,
@@ -860,13 +1022,15 @@
           8
         );
 
+        ///Sword and B button items
+        ctx.fillStyle = "black";
         ctx.fillRect(128, 24, 8, 16);
         ctx.fillRect(152, 24, 8, 16);
         if (swordEquipped == 1) {
           ctx.drawImage(hud, 555, 137, 8, 16, 152, 24, 8, 16);
         }
 
-        ///map fill gray
+        ///Fill map location in with gray
         ctx.fillStyle = "gray";
         ctx.fillRect(16, 8, 64, 48);
       }
