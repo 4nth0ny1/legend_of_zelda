@@ -82,6 +82,12 @@
         this.gameobjects = o;
       }
 
+      function playSound(source) {
+        let sound = new Audio();
+        sound.src = source;
+        sound.play();
+      }
+
       function keyDownHandler(e) {
         if (e.keyCode == 37) {
           leftPressed = true;
@@ -531,6 +537,7 @@
                     lastPickUpItem = gameObjects[i].pickUpItemNum;
                     swordEquipped = 1;
                     animationCounter = 0;
+                    playSound("./sounds/item.mp3");
                 }
 
                 objects.splice(i, 1);
@@ -619,6 +626,7 @@
                   0,
                   gameObjects[i].line1Current.length + 1
                 );
+                playSound("./sounds/LOZ_text_slow.wav");
               } else if (
                 gameObjects[i].line2Full.length !=
                 gameObjects[i].line2Current.length
@@ -629,6 +637,7 @@
                   0,
                   gameObjects[i].line2Current.length + 1
                 );
+                playSound("./sounds/LOZ_text_slow.wav");
               }
             }
 
