@@ -64,7 +64,6 @@
         this.newLinkX = -1;
         this.newLinkY = -1;
         this.isPortal = false;
-        //added after this comment
         this.counter = 0;
         this.imageNum = 0;
         this.isText = false;
@@ -127,7 +126,6 @@
         let speed = 2;
         animationCounter++;
         if (playPickUpItemAnimation) {
-          console.log("play pickupanimation");
           animationCounter++;
           if (animationCounter < 300) {
             ctx.drawImage(link1, 1, 150, 16, 16, linkX, linkY, 16, 16);
@@ -724,10 +722,9 @@
         }
       }
 
-      function drawHud() {
+      function drawHUD() {
         ctx.drawImage(hud, 258, 11, 256, 56, 0, 0, 256, 56);
 
-        // removes stock heart section and turns black
         ctx.fillStyle = "black";
         ctx.fillRect(176, 32, 64, 16);
 
@@ -743,10 +740,8 @@
           }
           ctx.drawImage(hud, 627, 117, 8, 8, heartX, heartY, 8, 8);
         }
-
         let halfHeartX = 0;
         let halfHeartY = 0;
-
         for (let i = 0; i < fullHearts; i++) {
           let heartY = 40;
           let heartX = 176 + i * 8;
@@ -770,6 +765,110 @@
         } else if (halfHearts > 0 && fullHearts == 0) {
           ctx.drawImage(hud, 636, 117, 8, 8, 176, 40, 8, 8);
         }
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(96, 10, 24, 50);
+
+        if (rupeeAmount < 100) {
+          ctx.drawImage(hud, 519, 117, 8, 8, 96, 16, 8, 8);
+          let firstNum = rupeeAmount % 10;
+          ctx.drawImage(
+            hud,
+            528 + 8 * firstNum + firstNum,
+            117,
+            8,
+            8,
+            96 + 16,
+            16,
+            8,
+            8
+          );
+          let secondNum = Math.floor(rupeeAmount / 10);
+          ctx.drawImage(
+            hud,
+            528 + 8 * secondNum + secondNum,
+            117,
+            8,
+            8,
+            96 + 8,
+            16,
+            8,
+            8
+          );
+        } else {
+          let firstNum = rupeeAmount % 10;
+          ctx.drawImage(
+            hud,
+            528 + 8 * firstNum + firstNum,
+            117,
+            8,
+            8,
+            96 + 16,
+            16,
+            8,
+            8
+          );
+          let thirdNum = Math.floor(rupeeAmount / 100) * 100;
+          let secondNum = (rupeeAmount - thirdNum - firstNum) / 10;
+          ctx.drawImage(
+            hud,
+            528 + 8 * secondNum + secondNum,
+            117,
+            8,
+            8,
+            96 + 8,
+            16,
+            8,
+            8
+          );
+          thirdNum = Math.floor(rupeeAmount / 100);
+          ctx.drawImage(
+            hud,
+            528 + 8 * thirdNum + thirdNum,
+            117,
+            8,
+            8,
+            96,
+            16,
+            8,
+            8
+          );
+        }
+
+        ctx.drawImage(hud, 519, 117, 8, 8, 96, 32, 8, 8);
+        ctx.drawImage(hud, 519, 117, 8, 8, 96, 41, 8, 8);
+        ctx.drawImage(
+          hud,
+          528 + 8 * keyAmount + keyAmount,
+          117,
+          8,
+          8,
+          96 + 8,
+          32,
+          8,
+          8
+        );
+        ctx.drawImage(
+          hud,
+          528 + 8 * bombAmount + bombAmount,
+          117,
+          8,
+          8,
+          96 + 8,
+          41,
+          8,
+          8
+        );
+
+        ctx.fillRect(128, 24, 8, 16);
+        ctx.fillRect(152, 24, 8, 16);
+        if (swordEquipped == 1) {
+          ctx.drawImage(hud, 555, 137, 8, 16, 152, 24, 8, 16);
+        }
+
+        ///map fill gray
+        ctx.fillStyle = "gray";
+        ctx.fillRect(16, 8, 64, 48);
       }
 
       function draw() {
@@ -779,10 +878,10 @@
           ctx.fillRect(0, 0, 256, 240);
           ///all code goes here
           drawMap(gameMap);
-          drawHud();
           drawLink();
           gameObjectCollision(linkX, linkY, gameObjects, true);
           drawGameObjects();
+          drawHUD();
         }, 1000 / fps);
       }
       draw();
